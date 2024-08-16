@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@ponder/core':
-    specifier: 0.5.12
-    version: 0.5.12(@types/node@20.14.9)(hono@4.5.5)(typescript@5.5.3)(viem@2.19.6)
+    specifier: 0.5.14
+    version: 0.5.14(@types/node@20.14.9)(hono@4.5.5)(typescript@5.5.3)(viem@2.19.6)
   hono:
     specifier: 4.5.5
     version: 4.5.5
@@ -170,6 +170,7 @@ packages:
   /@envelop/types@5.0.0:
     resolution: {integrity: sha512-IPjmgSc4KpQRlO4qbEDnBEixvtb06WDmjKfi/7fkZaryh5HuOmTtixe1EupQI5XfXO8joc3d27uUZ0QdC++euA==}
     engines: {node: '>=18.0.0'}
+    requiresBuild: true
     dependencies:
       tslib: 2.6.3
     dev: false
@@ -547,8 +548,8 @@ packages:
     dev: false
     optional: true
 
-  /@ponder/core@0.5.12(@types/node@20.14.9)(hono@4.5.5)(typescript@5.5.3)(viem@2.19.6):
-    resolution: {integrity: sha512-eaAiNiGVDNL8mawNt9vpX5q+1Qeu54uyqTKLWZxD3NSaRXlDM/4F6nJku6Un1vl6tYIzpTdw9EFzna4dRHb2sA==}
+  /@ponder/core@0.5.14(@types/node@20.14.9)(hono@4.5.5)(typescript@5.5.3)(viem@2.19.6):
+    resolution: {integrity: sha512-6R3UmlOj6jVE1N+29rvGhHCbWXPfLDGDyqkDakl30gqeEeHlYjpSsRE2GFg4rtATa1IbLumMIgDpPt6E9L4V8g==}
     engines: {node: '>=18.14'}
     hasBin: true
     peerDependencies:
