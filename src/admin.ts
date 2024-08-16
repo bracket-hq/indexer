@@ -1,9 +1,8 @@
 import type { Context } from "@/generated"
 import type { AdminEvent } from "@indexer/types"
-import { getBlockTimestamp } from "@indexer/utils"
 
 export async function createAdminEvent(context: Context, event: AdminEvent) {
-  const timestamp = await getBlockTimestamp(context, event.transaction.blockNumber)
+  const timestamp = Number(event.block.timestamp)
 
   return await context.db.AdminEvent.create({
     id: event.log.id,

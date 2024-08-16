@@ -1,6 +1,6 @@
 import type { Context } from "@/generated"
 import type { UserEvent } from "@indexer/types"
-import { getBlockTimestamp, getEventType } from "@indexer/utils"
+import { getEventType } from "@indexer/utils"
 
 function getPriceAndAmount(event: UserEvent) {
   const eventType = getEventType(event)
@@ -17,7 +17,7 @@ function getPriceAndAmount(event: UserEvent) {
 
 export async function upsertBalance(context: Context, event: UserEvent) {
   const eventType = getEventType(event)
-  const timestamp = await getBlockTimestamp(context, event.transaction.blockNumber)
+  const timestamp = Number(event.block.timestamp)
   const { fan, collective, fanVotes } = event.args
 
   // Derived values
