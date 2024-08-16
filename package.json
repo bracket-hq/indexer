@@ -1,0 +1,28 @@
+{
+  "name": "@nilli/indexer",
+  "private": true,
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "codegen": "ponder codegen",
+    "dev": "ponder dev",
+    "fix": "biome check --write --unsafe --no-errors-on-unmatched",
+    "lint": "pnpm run lint:biome && pnpm run lint:typecheck",
+    "lint:biome": "biome check --no-errors-on-unmatched",
+    "lint:typecheck": "tsc --noEmit",
+    "start": "ponder start"
+  },
+  "dependencies": {
+    "@ponder/core": "0.5.12",
+    "hono": "4.5.5",
+    "viem": "2.19.6"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.8.3",
+    "@types/node": "20.14.9",
+    "typescript": "5.5.3"
+  },
+  "engines": {
+    "node": ">=18.14"
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "$schema": "https://biomejs.dev/schemas/1.8.3/schema.json",
+  "organizeImports": {
+    "enabled": true
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "complexity": {
+        "noExcessiveCognitiveComplexity": {
+          "level": "warn",
+          "options": {
+            "maxAllowedComplexity": 16
+          }
+        }
+      },
+      "correctness": {
+        "useExhaustiveDependencies": "off",
+        "useHookAtTopLevel": "error",
+        "noUnusedImports": "error",
+        "noUndeclaredVariables": "error"
+      },
+      "nursery": {
+        "useSortedClasses": "warn"
+      },
+      "performance": {
+        "noBarrelFile": "error",
+        "noReExportAll": "error"
+      },
+      "style": {
+        "useCollapsedElseIf": "error"
+      },
+      "suspicious": {
+        "noEmptyBlockStatements": "error",
+        "useAwait": "error"
+      }
+    }
+  },
+  "files": {
+    "ignore": ["packages/ponder/ponder-env.d.ts"]
+  },
+  "formatter": {
+    "formatWithErrors": true,
+    "indentStyle": "space",
+    "lineWidth": 120,
+    "ignore": [".vscode"]
+  },
+  "javascript": {
+    "formatter": {
+      "indentStyle": "space",
+      "lineWidth": 120,
+      "semicolons": "asNeeded"
+    },
+    "globals": ["React", "it", "beforeEach", "describe", "run", "Virtual"]
+  },
+  "json": {
+    "parser": {
+      "allowComments": true
+    },
+    "formatter": {
+      "indentStyle": "space",
+      "lineWidth": 120
+    }
+  },
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true,
+    "defaultBranch": "master"
+  }
+}
