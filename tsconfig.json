@@ -29,46 +29,9 @@
     // Package paths
     "baseUrl": ".",
     "paths": {
-      // "@api/*": ["packages/api/src/*"],
-      // "@contract/*": ["packages/contract/src/*"],
-      // "@db/*": ["packages/db/src/*"],
       "@indexer/*": ["src/*"]
-      // "@web/*": ["packages/web/src/*"]
     }
   },
   "include": ["src", "abis", "ponder-env.d.ts"],
   "exclude": ["**/node_modules", "**/.*/"]
 }
-
-// {
-//   "extends": "../../tsconfig.base.json",
-//   "include": ["src", "abis", "ponder-env.d.ts"],
-//   "exclude": ["**/node_modules", "**/.*/"]
-// }
-
-// {
-//   "compilerOptions": {
-//     // Type checking
-//     "strict": true,
-//     "noUncheckedIndexedAccess": true,
-
-//     // Interop constraints
-//     "verbatimModuleSyntax": false,
-//     "esModuleInterop": true,
-//     "isolatedModules": true,
-//     "allowSyntheticDefaultImports": true,
-//     "resolveJsonModule": true,
-
-//     // Language and environment
-//     "moduleResolution": "bundler",
-//     "module": "ESNext",
-//     "noEmit": true,
-//     "lib": ["ES2022"],
-//     "target": "ES2022",
-
-//     // Skip type checking for node modules
-//     "skipLibCheck": true
-//   },
-//   "include": ["./**/*.ts"],
-//   "exclude": ["node_modules"]
-// }
