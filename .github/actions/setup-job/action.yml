@@ -1,0 +1,46 @@
+name: "Setup job"
+description: "Checkout repo and install dependencies"
+
+inputs:
+  node-version:
+    description: "Node.js version"
+    required: false
+    default: "20"
+  pnpm-version:
+    description: "pnpm version"
+    required: false
+    default: "8.15.9"
+
+outputs:
+  branch_name:
+    value: ${{ steps.set-branch-name.outputs.branch_name }}
+    description: "Branch name"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Get branch name
+      id: branch-name
+      uses: tj-actions/branch-names@v7
+
+    - name: Install pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: ${{ inputs.pnpm-version }}
+
+    - name: Install Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: 'pnpm'
+
+    - name: Install dependencies
+      run: pnpm install
+      shell: bash
+
+    - name: Set branch name
+      id: set-branch-name
+      run: echo "branch_name=$BRANCH_NAME" >> $GITHUB_OUTPUT
+      shell: bash
+      env:
+        BRANCH_NAME: ${{ steps.branch-name.outputs.current_branch }}

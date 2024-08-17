@@ -1,0 +1,76 @@
+name: 'Comment on PR'
+description: 'Update status comment on a pull request'
+
+inputs:
+  status:
+    description: 'The status of the deployment'
+    required: true
+  commit_sha:
+    description: 'The commit SHA to include in the comment'
+    required: true
+  pages_url:
+    description: 'The URL for the web preview'
+    required: false
+    default: ''
+  worker_url:
+    description: 'The URL for the Cloudflare Worker'
+    required: false
+    default: ''
+  neon_url:
+    description: 'The URL for the Neon Database'
+    required: false
+    default: ''
+  branch_id:
+    description: 'The branch of the Neon Database'
+    required: false
+    default: ''
+
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Set Pages URL
+      id: set-pages-url
+      shell: bash
+      run: |
+        if [ "${{ inputs.pages_url }}" != "" ]; then
+          echo "pages_url=<a href='${{ inputs.pages_url }}'>${{ inputs.pages_url }}</a>" >> $GITHUB_ENV
+        else
+          echo "pages_url=Queued" >> $GITHUB_ENV
+        fi
+
+    - name: Set Worker URL
+      id: set-worker-url
+      shell: bash
+      run: |
+        if [ "${{ inputs.worker_url }}" != "" ]; then
+          echo "worker_url=<a href='${{ inputs.worker_url }}'>${{ inputs.worker_url }}</a>" >> $GITHUB_ENV
+        else
+          echo "worker_url=Queued" >> $GITHUB_ENV
+        fi
+
+    - name: Set Neon URL
+      id: set-neon-url
+      shell: bash
+      run: |
+        if [ "${{ inputs.neon_url }}" != "" ]; then
+          echo "neon_url=<a href='${{ inputs.neon_url }}'>${{ inputs.branch_id }}</a>" >> $GITHUB_ENV
+        else
+          echo "neon_url=Queued" >> $GITHUB_ENV
+        fi
+
+    - name: Comment on PR
+      uses: thollander/actions-comment-pull-request@v2
+      with:
+        message: |
+          ## Deploying with 🐙 GitHub Actions
+          <table>
+          <tr><td><strong>Latest commit:</strong></td><td><code>${{ inputs.commit_sha }}</code></td></tr>
+          <tr><td><strong>Status:</strong></td><td>${{ inputs.status }}</td></tr>
+          <tr><td><strong>Web Preview:</strong></td><td>${{ env.pages_url }}</td></tr>
+          <tr><td><strong>Cloudflare Worker:</strong></td><td>${{ env.worker_url }}</td></tr>
+          <tr><td><strong>Neon Database:</strong></td><td>${{ env.neon_url }}</td></tr>
+          </table>
+
+          [View build](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+        comment_tag: preview
