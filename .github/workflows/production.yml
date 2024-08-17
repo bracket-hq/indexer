@@ -5,6 +5,15 @@ on:
     branches: [master]
 
 jobs:
+  check-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check branch
+        if: github.base_ref == 'master' && github.head_ref != 'staging'
+        run: |
+          echo "ERROR: You can only merge to main from dev."
+          exit 1
+
   lint-project:
     runs-on: ubuntu-latest
     steps:
