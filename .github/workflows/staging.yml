@@ -1,9 +1,8 @@
-name: Preview
-run-name: Linting Preview from ${{ github.head_ref }} by ${{ github.triggering_actor}}
+name: Staging
+run-name: Linting Staging by ${{ github.triggering_actor }}
 on:
-  pull_request:
-    branches-ignore: [master, staging]
-    types: [opened, reopened, synchronize]
+  pull_request: 
+    branches: [staging]
 
 jobs:
   initial-pr-comment:
@@ -28,7 +27,17 @@ jobs:
     outputs:
       commit_sha: ${{ steps.trim-commit-sha.outputs.commit_sha }}
 
+  check-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check branch
+        if: github.base_ref == 'staging' && github.head_ref != 'dev'
+        run: |
+          echo "ERROR: You can only merge to staging from dev."
+          exit 1
+
   lint-project:
+    needs: [check-branch]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
