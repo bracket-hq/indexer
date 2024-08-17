@@ -1,7 +1,7 @@
 import type { Event } from "@/generated"
 import type { Address } from "viem"
 
-type FeeStructure = [bigint, bigint, bigint, Address]
+export type FeeStructure = [bigint, bigint, bigint, Address]
 export type SeasonNow = {
   isDistributed: boolean
   isVerified: boolean
