@@ -1,0 +1,26 @@
+name: 'Comment on PR'
+description: 'Update status comment on a pull request'
+
+inputs:
+  status:
+    description: 'The status of the deployment'
+    required: true
+  commit_sha:
+    description: 'The commit SHA to include in the comment'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Comment on PR
+      uses: thollander/actions-comment-pull-request@v2
+      with:
+        message: |
+          ## Linting with 🐙 GitHub Actions
+          <table>
+          <tr><td><strong>Latest commit:</strong></td><td><code>${{ inputs.commit_sha }}</code></td></tr>
+          <tr><td><strong>Status:</strong></td><td>${{ inputs.status }}</td></tr>
+          </table>
+
+          [View build](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+        comment_tag: preview

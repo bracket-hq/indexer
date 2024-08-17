@@ -1,0 +1,65 @@
+name: Preview
+run-name: Deploy Preview from ${{ github.head_ref }} by ${{ github.triggering_actor}}
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+jobs:
+  lint-project:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.pull_request.head.ref != 'master' }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup job
+        id: setup-job
+        uses: ./.github/actions/setup-job
+
+      - name: Lint project files
+        run: pnpm run lint
+
+  initial-pr-comment:
+    permissions: write-all
+    runs-on: ubuntu-latest
+    if: ${{ github.event.pull_request.head.ref != 'master' }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Trim commit sha
+        id: trim-commit-sha
+        run: |
+          sha=$(echo ${{github.sha}} | cut -c 1-7)
+          echo commit_sha=$sha >> $GITHUB_OUTPUT
+
+      - name: Comment on PR
+        uses: ./.github/actions/comment-pr
+        with:
+          status: '⏳ In progress'
+          commit_sha: ${{ steps.trim-commit-sha.outputs.commit_sha }}
+
+    outputs:
+      commit_sha: ${{ steps.trim-commit-sha.outputs.commit_sha }}
+
+  final-pr-comment:
+    needs: [lint-project, initial-pr-comment]
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Comment on PR (Success)
+        if: success()
+        uses: ./.github/actions/comment-pr
+        with:
+          status: '✅ Success'
+          commit_sha: ${{ needs.initial-pr-comment.outputs.commit_sha }}
+
+      - name: Comment on PR (Failure)
+        if: failure()
+        uses: ./.github/actions/comment-pr
+        with:
+          status: '❌ Failure'
+          commit_sha: ${{ needs.initial-pr-comment.outputs.commit_sha }}
