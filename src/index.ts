@@ -1,8 +1,8 @@
 import { ponder } from "@/generated"
 import { createAdminEvent } from "@indexer/admin"
 import { upsertBalance } from "@indexer/balance"
-import { updateAdminCollective, upsertCollective } from "@indexer/collective"
-import { upsertContract } from "@indexer/contract"
+import { updateCollectiveAdmin, upsertCollective } from "@indexer/collective"
+import { upsertContract, upsertContractAdmin } from "@indexer/contract"
 import { createEvent } from "@indexer/event"
 import { upsertFan } from "@indexer/fan"
 
@@ -42,24 +42,24 @@ ponder.on("BG_Beta:DistributeCollectiveWinnings", async ({ context, event }) => 
   const newEvent = await createAdminEvent(context, event)
   if (!newEvent) console.warn(`WARN: Event creation failed, log id: ${event.log.id}`)
 
-  await upsertContract(context, event)
-  await updateAdminCollective(context, event)
+  await upsertContractAdmin(context, event)
+  await updateCollectiveAdmin(context, event)
 })
 
 ponder.on("BG_Beta:OraclewinPositionVerified", async ({ context, event }) => {
   const newEvent = await createAdminEvent(context, event)
   if (!newEvent) console.warn(`WARN: Event creation failed, log id: ${event.log.id}`)
 
-  await upsertContract(context, event)
-  await updateAdminCollective(context, event)
+  await upsertContractAdmin(context, event)
+  await updateCollectiveAdmin(context, event)
 })
 
 ponder.on("BG_Beta:SetCollectiveFanbase", async ({ context, event }) => {
   const newEvent = await createAdminEvent(context, event)
   if (!newEvent) console.warn(`WARN: Event creation failed, log id: ${event.log.id}`)
 
-  await upsertContract(context, event)
-  await updateAdminCollective(context, event)
+  await upsertContractAdmin(context, event)
+  await updateCollectiveAdmin(context, event)
 })
 
 // Admin contract events
@@ -67,61 +67,61 @@ ponder.on("BG_Beta:DistributeSeason", async ({ context, event }) => {
   const newEvent = await createAdminEvent(context, event)
   if (!newEvent) console.warn(`WARN: Event creation failed, log id: ${event.log.id}`)
 
-  await upsertContract(context, event)
+  await upsertContractAdmin(context, event)
 })
 
 ponder.on("BG_Beta:IncreasePrizePool", async ({ context, event }) => {
   const newEvent = await createAdminEvent(context, event)
   if (!newEvent) console.warn(`WARN: Event creation failed, log id: ${event.log.id}`)
 
-  await upsertContract(context, event)
+  await upsertContractAdmin(context, event)
 })
 
 ponder.on("BG_Beta:Initialized", async ({ context, event }) => {
   const newEvent = await createAdminEvent(context, event)
   if (!newEvent) console.warn(`WARN: Event creation failed, log id: ${event.log.id}`)
 
-  await upsertContract(context, event)
+  await upsertContractAdmin(context, event)
 })
 
 ponder.on("BG_Beta:OracleWinningsVerified", async ({ context, event }) => {
   const newEvent = await createAdminEvent(context, event)
   if (!newEvent) console.warn(`WARN: Event creation failed, log id: ${event.log.id}`)
 
-  await upsertContract(context, event)
+  await upsertContractAdmin(context, event)
 })
 
 ponder.on("BG_Beta:OwnershipTransferred", async ({ context, event }) => {
   const newEvent = await createAdminEvent(context, event)
   if (!newEvent) console.warn(`WARN: Event creation failed, log id: ${event.log.id}`)
 
-  await upsertContract(context, event)
+  await upsertContractAdmin(context, event)
 })
 
 ponder.on("BG_Beta:Paused", async ({ context, event }) => {
   const newEvent = await createAdminEvent(context, event)
   if (!newEvent) console.warn(`WARN: Event creation failed, log id: ${event.log.id}`)
 
-  await upsertContract(context, event)
+  await upsertContractAdmin(context, event)
 })
 
 ponder.on("BG_Beta:RoleAdminChanged", async ({ context, event }) => {
   const newEvent = await createAdminEvent(context, event)
   if (!newEvent) console.warn(`WARN: Event creation failed, log id: ${event.log.id}`)
 
-  await upsertContract(context, event)
+  await upsertContractAdmin(context, event)
 })
 
 ponder.on("BG_Beta:RoleGranted", async ({ context, event }) => {
   const newEvent = await createAdminEvent(context, event)
   if (!newEvent) console.warn(`WARN: Event creation failed, log id: ${event.log.id}`)
 
-  await upsertContract(context, event)
+  await upsertContractAdmin(context, event)
 })
 
 ponder.on("BG_Beta:SetFeeStructure", async ({ context, event }) => {
   const newEvent = await createAdminEvent(context, event)
   if (!newEvent) console.warn(`WARN: Event creation failed, log id: ${event.log.id}`)
 
-  await upsertContract(context, event)
+  await upsertContractAdmin(context, event)
 })
