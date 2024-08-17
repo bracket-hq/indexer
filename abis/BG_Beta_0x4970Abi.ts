@@ -1,4 +1,4 @@
-export const BG_Beta = [
+export const BG_Beta_0x4970Abi = [
   { inputs: [], name: "AccessControlBadConfirmation", type: "error" },
   {
     inputs: [
@@ -140,25 +140,6 @@ export const BG_Beta = [
     anonymous: false,
     inputs: [
       {
-        indexed: false,
-        internalType: "bool",
-        name: "isVerified",
-        type: "bool",
-      },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "season",
-        type: "uint256",
-      },
-    ],
-    name: "OracleWinningsVerified",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
         indexed: true,
         internalType: "address",
         name: "collective",
@@ -177,7 +158,26 @@ export const BG_Beta = [
         type: "uint256",
       },
     ],
-    name: "OraclewinPositionVerified",
+    name: "OracleExitRoundVerified",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "bool",
+        name: "isVerified",
+        type: "bool",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "season",
+        type: "uint256",
+      },
+    ],
+    name: "OracleWinningsVerified",
     type: "event",
   },
   {
@@ -667,9 +667,9 @@ export const BG_Beta = [
   {
     inputs: [
       { internalType: "address", name: "collective", type: "address" },
-      { internalType: "uint256", name: "postion", type: "uint256" },
+      { internalType: "uint256", name: "round", type: "uint256" },
     ],
-    name: "receiveVerifiedCollectiveWinPosition",
+    name: "receiveVerifiedCollectiveExitRound",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -730,6 +730,7 @@ export const BG_Beta = [
           { internalType: "uint256", name: "endBlock", type: "uint256" },
           { internalType: "uint256", name: "prizePool", type: "uint256" },
           { internalType: "uint256", name: "distributedPool", type: "uint256" },
+          { internalType: "uint256", name: "roundsN", type: "uint256" },
           {
             internalType: "uint256[]",
             name: "winningBreakdown",
@@ -754,6 +755,7 @@ export const BG_Beta = [
       { internalType: "uint256", name: "endBlock", type: "uint256" },
       { internalType: "uint256", name: "prizePool", type: "uint256" },
       { internalType: "uint256", name: "distributedPool", type: "uint256" },
+      { internalType: "uint256", name: "roundsN", type: "uint256" },
     ],
     stateMutability: "view",
     type: "function",
@@ -808,6 +810,7 @@ export const BG_Beta = [
   {
     inputs: [
       { internalType: "uint256", name: "_season", type: "uint256" },
+      { internalType: "uint256", name: "roundsN", type: "uint256" },
       {
         internalType: "uint256[]",
         name: "winningBreakdown",

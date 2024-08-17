@@ -26,7 +26,10 @@ async function readCollectiveVotes(context: Context, contract: Address, collecti
 
 async function readClaimerVotes(context: Context, contract: Address, collective: Address) {
   const { claimerAccount } = (await context.db.Contract.findUnique({ id: contract })) ?? {
-    claimerAccount: process.env.DEFAULT_CLAIMER as Address,
+    claimerAccount:
+      process.env.NODE_ENV === "production"
+        ? (process.env.DEFAULT_CLAIMER as Address)
+        : (process.env.DEFAULT_CLAIMER_SEPOLIA as Address),
   }
   if (!claimerAccount) throw new Error("claimerAccount is undefined, is the environment variable set?")
 
