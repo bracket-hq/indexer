@@ -43,7 +43,7 @@ jobs:
       commit_sha: ${{ steps.trim-commit-sha.outputs.commit_sha }}
 
   final-pr-comment:
-    needs: [initial-pr-comment]
+    needs: [lint-project, initial-pr-comment]
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
