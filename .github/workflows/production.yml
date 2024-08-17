@@ -1,20 +1,43 @@
 name: Production
-run-name: Deploy to Production by ${{ github.triggering_actor }}
+run-name: Linting Production by ${{ github.triggering_actor }}
 on:
-  push:
+  pull_request: 
     branches: [master]
 
 jobs:
+  initial-pr-comment:
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Trim commit sha
+        id: trim-commit-sha
+        run: |
+          sha=$(echo ${{github.sha}} | cut -c 1-7)
+          echo commit_sha=$sha >> $GITHUB_OUTPUT
+
+      - name: Comment on PR
+        uses: ./.github/actions/comment-pr
+        with:
+          status: '⏳ In progress'
+          commit_sha: ${{ steps.trim-commit-sha.outputs.commit_sha }}
+
+    outputs:
+      commit_sha: ${{ steps.trim-commit-sha.outputs.commit_sha }}
+
   check-branch:
     runs-on: ubuntu-latest
     steps:
       - name: Check branch
         if: github.base_ref == 'master' && github.head_ref != 'staging'
         run: |
-          echo "ERROR: You can only merge to main from dev."
+          echo "ERROR: You can only merge to master from staging."
           exit 1
 
   lint-project:
+    needs: [check-branch]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
@@ -26,3 +49,25 @@ jobs:
 
       - name: Lint project files
         run: pnpm run lint
+
+  final-pr-comment:
+    needs: [initial-pr-comment, lint-project]
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Comment on PR (Success)
+        if: success()
+        uses: ./.github/actions/comment-pr
+        with:
+          status: '✅ Success'
+          commit_sha: ${{ needs.initial-pr-comment.outputs.commit_sha }}
+
+      - name: Comment on PR (Failure)
+        if: failure()
+        uses: ./.github/actions/comment-pr
+        with:
+          status: '❌ Failure'
+          commit_sha: ${{ needs.initial-pr-comment.outputs.commit_sha }}
