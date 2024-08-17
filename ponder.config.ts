@@ -96,6 +96,12 @@ export default createConfig({
               "0xc8dbF53D48e7036b824A69E500DAF3dF519B99f6", // 11005720, usopengolf
               "0x86135cda8Ea310194F75FEC947bAac01c694AC17", // 11309019, euro24
               "0x3E0DdCc2f3Adaa0e49D9517405DBEA0EC0Cfe7f4", // 12393587, opengolf
+              "0xCdcB7106bEC6CFF7DAca056E86eA05EEE1630996", // 13080228, parissoccer
+              "0xfe6cdBf90338bA11B829ba5baA73a4449Cf681C2", // 13080282, parissoccerw
+              "0x861E60CfEb9B4aeD20eBEb4523B0f68d6f9dc97E", // 13080313, parisbball
+              "0xa9a7dC4851c5E3Ac7F3ccD107644EecfE8224263", // 13080339, parisgolf
+              "0x8407B357165848fFea64CBbCf740B9B9EED30B3D", // 13080378, paristennis
+              "0x2910427Dd4B542d592d0e3B3363400d78aa7B5FA", // 13080459, parisgymnastics
             ],
           },
   },
