@@ -1,6 +1,5 @@
 import type { Context } from "@/generated"
 import type { AdminEvent, ContractMulticall, UserEvent } from "@indexer/types"
-import { getBlockTimestamp } from "@indexer/utils"
 import type { Address } from "viem"
 
 async function readContractMulticall(context: Context, address: Address) {
@@ -58,7 +57,7 @@ async function readContractMulticall(context: Context, address: Address) {
 }
 
 export async function upsertContract(context: Context, event: UserEvent | AdminEvent) {
-  const timestamp = await getBlockTimestamp(context, event.transaction.blockNumber)
+  const timestamp = Number(event.block.timestamp)
   const contractData = await readContractMulticall(context, event.log.address)
 
   // TODO: Resolve error in seasonNow that causes contractData to be undefined

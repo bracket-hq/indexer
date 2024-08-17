@@ -1,6 +1,6 @@
 import type { Context } from "@/generated"
 import type { UserEvent } from "@indexer/types"
-import { getBlockTimestamp, getEventType } from "./utils"
+import { getEventType } from "./utils"
 
 function getPrices(event: UserEvent, eventType: "buy" | "sell" | "redeem" | "transfer" | "unknown") {
   const defaultPrices = {
@@ -37,7 +37,7 @@ function getPrices(event: UserEvent, eventType: "buy" | "sell" | "redeem" | "tra
 }
 
 export async function createEvent(context: Context, event: UserEvent) {
-  const timestamp = await getBlockTimestamp(context, event.transaction.blockNumber)
+  const timestamp = Number(event.block.timestamp)
   const eventType = getEventType(event)
 
   const priceData = getPrices(event, eventType)

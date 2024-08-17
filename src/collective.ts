@@ -1,6 +1,5 @@
 import type { Context, Event } from "@/generated"
 import type { UserEvent } from "@indexer/types"
-import { getBlockTimestamp } from "@indexer/utils"
 import { ERC20 } from "abis/ERC20"
 import type { Address } from "viem"
 
@@ -99,7 +98,7 @@ function getPosition(
 }
 
 export async function upsertCollective(context: Context, event: UserEvent) {
-  const timestamp = await getBlockTimestamp(context, event.transaction.blockNumber)
+  const timestamp = Number(event.block.timestamp)
   const contractData = await context.db.Contract.findUnique({ id: event.log.address })
   if (!contractData) console.warn(`WARN: Contract not found, address: ${event.log.address}`)
 
@@ -156,7 +155,7 @@ export async function updateAdminCollective(
     | Event<"BG_Beta:OraclewinPositionVerified">
     | Event<"BG_Beta:SetCollectiveFanbase">,
 ) {
-  const timestamp = await getBlockTimestamp(context, event.transaction.blockNumber)
+  const timestamp = Number(event.block.timestamp)
   const contractData = await context.db.Contract.findUnique({ id: event.log.address })
   if (!contractData) console.warn(`WARN: Contract not found, address: ${event.log.address}`)
 
