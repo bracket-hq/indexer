@@ -38,7 +38,7 @@
     }
   },
   "files": {
-    "ignore": ["packages/ponder/ponder-env.d.ts"]
+    "ignore": ["ponder-env.d.ts"]
   },
   "formatter": {
     "formatWithErrors": true,
