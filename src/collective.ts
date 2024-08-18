@@ -6,60 +6,60 @@ import type { Address } from "viem"
 // const ONE_DAY_OF_BLOCKS = 43_200n
 
 async function readCollectiveVotes(context: Context, contract: Address, collective: Address) {
-  const result = await context.client.readContract({
-    abi: context.contracts.BG_Beta.abi,
-    address: contract,
-    functionName: "collectives",
-    args: [collective],
-  })
-  if (result === undefined || result === null) {
+  try {
+    const result = await context.client.readContract({
+      abi: context.contracts.BG_Beta.abi,
+      address: contract,
+      functionName: "collectives",
+      args: [collective],
+    })
+
+    return {
+      name: result[0],
+      voteCount: result[1],
+      burntVoteCount: result[2],
+    }
+  } catch (error) {
     console.warn(`WARN: Function call 'collectives' failed, contract: ${contract}, args: ${[collective]}`)
     return { name: "", voteCount: 0n, burntVoteCount: 0n }
-  }
-
-  return {
-    name: result[0],
-    voteCount: result[1],
-    burntVoteCount: result[2],
   }
 }
 
 async function readClaimerVotes(context: Context, contract: Address, collective: Address) {
   const { claimerAccount } = (await context.db.Contract.findUnique({ id: contract })) ?? {
-    claimerAccount:
-      process.env.NODE_ENV === "production"
-        ? (process.env.DEFAULT_CLAIMER as Address)
-        : (process.env.DEFAULT_CLAIMER_SEPOLIA as Address),
+    claimerAccount: process.env.DEFAULT_CLAIMER as Address,
   }
   if (!claimerAccount) throw new Error("claimerAccount is undefined, is the environment variable set?")
 
-  const result = await context.client.readContract({
-    abi: context.contracts.BG_Beta.abi,
-    address: contract,
-    functionName: "balanceOf",
-    args: [claimerAccount, collective],
-  })
-  if (result === null || result === undefined) {
+  try {
+    const result = await context.client.readContract({
+      abi: context.contracts.BG_Beta.abi,
+      address: contract,
+      functionName: "balanceOf",
+      args: [claimerAccount, collective],
+    })
+
+    return result
+  } catch (error) {
     console.warn(`WARN: Function call 'balanceOf' failed, contract: ${contract}, args: ${[claimerAccount, collective]}`)
     return 0n
   }
-
-  return result
 }
 
 async function readTreasuryValue(context: Context, token: Address, collective: Address) {
-  const result = await context.client.readContract({
-    abi: ERC20,
-    address: token,
-    functionName: "balanceOf",
-    args: [collective],
-  })
-  if (result === undefined || result === null) {
+  try {
+    const result = await context.client.readContract({
+      abi: ERC20,
+      address: token,
+      functionName: "balanceOf",
+      args: [collective],
+    })
+
+    return result
+  } catch (error) {
     console.warn(`WARN: Function call 'balanceOf' failed, token: ${token}, args: ${[collective]}`)
     return 0n
   }
-
-  return result
 }
 
 // TODO: Need to calculate percent change without using findMany for performance

@@ -14,6 +14,26 @@ export type SeasonNow = {
 }
 export type ContractMulticall = [Address, Address, Address, bigint, bigint, boolean, FeeStructure, SeasonNow]
 
+export type ContractData = {
+  owner: Address
+  stableCoin: Address
+  claimerAccount: Address
+  currentSeason: bigint
+  curveDenominator: bigint
+  txPaused: boolean
+  poolPct: bigint
+  collectivePct: bigint
+  protocolPct: bigint
+  protocolDestination: Address
+  isDistributed: boolean
+  isVerified: boolean
+  startBlock: bigint
+  endBlock: bigint
+  prizePool: bigint
+  distributedPool: bigint
+  winningBreakdown: bigint[]
+}
+
 export type UserEvent = Event<"BG_Beta:Trade"> | Event<"BG_Beta:TransferVotes"> | Event<"BG_Beta:Redeem">
 export type AdminEvent =
   | Event<"BG_Beta:DistributeCollectiveWinnings">
