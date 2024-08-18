@@ -1,5 +1,5 @@
-name: Lint Env
-run-name: Linting PR from ${{ github.head_ref }} by ${{ github.triggering_actor}}
+name: Lint
+run-name: Lint PR to ${{ github.head_ref }} by ${{ github.triggering_actor}}
 on:
   pull_request:
     branches: [master, staging]
