@@ -1,0 +1,20 @@
+name: Lint PR
+run-name: Linting PR from ${{ github.head_ref }} by ${{ github.triggering_actor}}
+on:
+  pull_request:
+    branches-ignore: [master, staging]
+    types: [opened, reopened, synchronize]
+
+jobs:
+  lint-project:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup job
+        id: setup-job
+        uses: ./.github/actions/setup-job
+
+      - name: Lint project files
+        run: pnpm run lint

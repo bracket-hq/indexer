@@ -1,0 +1,32 @@
+name: Lint Env
+run-name: Linting PR from ${{ github.head_ref }} by ${{ github.triggering_actor}}
+on:
+  pull_request:
+    branches: [master, staging]
+
+jobs:
+  check-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check branch
+        if: (github.base_ref == 'staging' && github.head_ref != 'dev') || (github.base_ref == 'master' && github.head_ref != 'staging')
+        run: |
+          if [ "${{ github.base_ref }}" == "staging" ]; then
+            echo "ERROR: You can only merge to staging from dev. Current head branch is ${{ github.head_ref }}."
+          elif [ "${{ github.base_ref }}" == "master" ]; then
+            echo "ERROR: You can only merge to master from staging. Current head branch is ${{ github.head_ref }}."
+          fi
+          exit 1
+
+  lint-project:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup job
+        id: setup-job
+        uses: ./.github/actions/setup-job
+
+      - name: Lint project files
+        run: pnpm run lint
