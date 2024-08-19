@@ -21,7 +21,9 @@ console.info(`INFO: Starting Ponder with NODE_ENV=${process.env.NODE_ENV}`)
 export default createConfig({
   database: {
     kind: "postgres",
-    publishSchema: "indexer",
+    schema: "indexer",
+    // NOTE: publicSchema uses materialized views, which are not supported by PowerSync
+    // publishSchema: "indexer",
   },
   networks: {
     base: {
