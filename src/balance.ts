@@ -17,6 +17,9 @@ function getPriceAndAmount(event: UserEvent) {
 
 export async function upsertBalance(context: Context, event: UserEvent) {
   const eventType = getEventType(event)
+  // Do not track balance for collective events
+  if (eventType === "collective") return
+
   const timestamp = Number(event.block.timestamp)
   const { fan, collective, fanVotes } = event.args
 
@@ -25,7 +28,7 @@ export async function upsertBalance(context: Context, event: UserEvent) {
   const { price, voteAmount } = getPriceAndAmount(event)
 
   return await context.db.Balance.upsert({
-    id: `${fan}:${collective}`,
+    id: `${fan}-${collective}`,
     create: {
       fan,
       collective,

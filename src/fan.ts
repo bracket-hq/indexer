@@ -26,7 +26,7 @@ export async function upsertFan(context: Context, event: UserEvent) {
   if (!contractData) console.warn(`WARN: Contract not found, address: ${event.log.address}`)
 
   let tokenBalance = 0n
-  if (contractData) tokenBalance = await readTokenBalance(context, event.args.fan, contractData.stableCoin)
+  if (contractData) tokenBalance = await readTokenBalance(context, event.args.fan, contractData.stableCoin as Address)
 
   return await context.db.Fan.upsert({
     id: event.args.fan,
