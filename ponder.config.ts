@@ -23,7 +23,7 @@ export default createConfig({
     kind: "postgres",
     schema: "indexer",
     // NOTE: publicSchema uses materialized views, which are not supported by PowerSync
-    publishSchema: "",
+    publishSchema: undefined,
   },
   networks: {
     base: {
