@@ -34,6 +34,7 @@ export type ContractData = {
   winningBreakdown: bigint[]
 }
 
+export type EventType = "buy" | "sell" | "transfer" | "redeem" | "collective" | "unknown"
 export type UserEvent = Event<"BG_Beta:Trade"> | Event<"BG_Beta:TransferVotes"> | Event<"BG_Beta:Redeem">
 export type AdminEvent =
   | Event<"BG_Beta:DistributeCollectiveWinnings">

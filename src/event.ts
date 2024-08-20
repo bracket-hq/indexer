@@ -1,8 +1,8 @@
 import type { Context } from "@/generated"
-import type { UserEvent } from "@indexer/types"
+import type { EventType, UserEvent } from "@indexer/types"
 import { getEventType } from "./utils"
 
-function getPrices(event: UserEvent, eventType: "buy" | "sell" | "redeem" | "transfer" | "unknown") {
+function getPrices(event: UserEvent, eventType: EventType) {
   const defaultPrices = {
     priceBase: 0n,
     pricePoolFee: 0n,
@@ -13,7 +13,7 @@ function getPrices(event: UserEvent, eventType: "buy" | "sell" | "redeem" | "tra
     pricePerVote: 0n,
   }
 
-  if (["buy", "sell"].includes(eventType) && "price" in event.args) {
+  if (["buy", "sell", "collective"].includes(eventType) && "price" in event.args) {
     return {
       priceBase: event.args.price.base,
       pricePoolFee: event.args.price.poolFee,

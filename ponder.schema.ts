@@ -1,15 +1,16 @@
 import { type ReplaceBigInts, createSchema } from "@ponder/core"
 import type { Address } from "viem"
 
+// TODO: Replace p.string() with p.hex() for addresses?
 export default createSchema((p) => ({
   AdminEvent: p.createTable(
     {
       id: p.string(),
-      from: p.hex(),
-      input: p.hex(),
-      contractId: p.hex().references("Contract.id"),
+      from: p.string(), // Admin address
+      input: p.string(), // Input data
+      contractId: p.string().references("Contract.id"), // Contract address
       // Timestamps
-      hash: p.hex(),
+      hash: p.string(), // Transaction hash
       logIndex: p.int(),
       blockNumber: p.bigint(),
       timestamp: p.int(),
@@ -21,8 +22,8 @@ export default createSchema((p) => ({
   Balance: p.createTable(
     {
       id: p.string(), // Composite key of fan and collective
-      fan: p.hex(),
-      collective: p.hex(),
+      fan: p.string(), // Fan address
+      collective: p.string(), // Collective address
       fanVotes: p.bigint(), // Current balance of votes for this fan
       // Profit & loss
       totalBuyPrice: p.bigint(), // Cumulative amount spent on all purchases
@@ -45,7 +46,7 @@ export default createSchema((p) => ({
   ),
   Collective: p.createTable(
     {
-      id: p.hex(), // Collective address
+      id: p.string(), // Collective address
       price: p.bigint(),
       fanCount: p.bigint(),
       voteCount: p.bigint(),
@@ -53,7 +54,7 @@ export default createSchema((p) => ({
       claimerVoteCount: p.bigint(),
       position: p.bigint().optional(),
       fanbase: p.string().optional(),
-      contractId: p.hex().references("Contract.id"),
+      contractId: p.string().references("Contract.id"), // Contract address
       treasuryValue: p.bigint(), // Multisig's balance of the stableCoin
       percentChange: p.float(), // Percent change in price in the last 24 hours
       // Timestamps
@@ -66,10 +67,10 @@ export default createSchema((p) => ({
     },
   ),
   Contract: p.createTable({
-    id: p.hex(), // Contract address
-    owner: p.hex(),
-    stableCoin: p.hex(),
-    claimerAccount: p.hex(),
+    id: p.string(), // Contract address
+    owner: p.string(), // Owner address
+    stableCoin: p.string(), // Stablecoin address
+    claimerAccount: p.string(), // Claimer address
     currentSeason: p.bigint(),
     curveDenominator: p.bigint(),
     txPaused: p.boolean(),
@@ -77,7 +78,7 @@ export default createSchema((p) => ({
     poolPct: p.bigint(),
     collectivePct: p.bigint(),
     protocolPct: p.bigint(),
-    protocolDestination: p.hex(),
+    protocolDestination: p.string(), // Protocol address
     // Season now
     isDistributed: p.boolean(),
     isVerified: p.boolean(),
@@ -91,13 +92,13 @@ export default createSchema((p) => ({
     updatedAt: p.int(),
     lastEventId: p.string().references("Event.id"),
   }),
-  EventType: p.createEnum(["buy", "sell", "redeem", "transfer", "unknown"]),
+  EventType: p.createEnum(["buy", "sell", "redeem", "transfer", "collective", "unknown"]),
   Event: p.createTable(
     {
       id: p.string(),
-      fanId: p.hex().references("Fan.id"), // Fan address
-      collectiveId: p.hex().references("Collective.id"), // Collective address
-      contractId: p.hex().references("Contract.id"), // Contract address
+      fanId: p.string().references("Fan.id"), // Fan address
+      collectiveId: p.string().references("Collective.id"), // Collective address
+      contractId: p.string().references("Contract.id"), // Contract address
       eventType: p.enum("EventType"),
       // Vote information
       voteAmount: p.bigint(),
@@ -112,7 +113,7 @@ export default createSchema((p) => ({
       priceTotal: p.bigint(),
       pricePerVote: p.bigint(),
       // Timestamps
-      hash: p.hex(),
+      hash: p.string(), // Transaction hash
       logIndex: p.int(),
       blockNumber: p.bigint(),
       timestamp: p.int(),
@@ -125,9 +126,9 @@ export default createSchema((p) => ({
     },
   ),
   Fan: p.createTable({
-    id: p.hex(), // Fan address
+    id: p.string(), // Fan address
     eventCount: p.int(), // Number of events the fan has participated in
-    contracts: p.hex().list(), // List of contract addresses the fan has used
+    contracts: p.string().list(), // List of contract addresses the fan has used
     tokenBalances: p.json<ReplaceBigInts<{ [key: Address]: bigint }, string>>().optional(),
     // Timestamps
     createdAt: p.int(),
