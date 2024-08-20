@@ -12,7 +12,7 @@
     "lint": "pnpm run lint:biome && pnpm run lint:typecheck",
     "lint:biome": "biome check --no-errors-on-unmatched",
     "lint:typecheck": "tsc --noEmit",
-    "start": "env -u RAILWAY_SERVICE_NAME ponder start"
+    "start": "env -u RAILWAY_DEPLOYMENT_ID ponder start"
   },
   "simple-git-hooks": {
     "pre-commit": "pnpm exec lint-staged",
