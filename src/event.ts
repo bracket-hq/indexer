@@ -50,15 +50,15 @@ export async function createEvent(context: Context, event: UserEvent) {
       contractId: event.log.address,
       eventType,
       // Vote information
-      voteAmount: event.args.voteAmount,
-      fanVotes: event.args.fanVotes,
-      supply: event.args.supply,
+      voteAmount: Number(event.args.voteAmount),
+      fanVotes: Number(event.args.fanVotes),
+      supply: Number(event.args.supply),
       // Price information
       ...priceData,
       // Timestamps
       hash: event.transaction.hash,
       logIndex: event.log.logIndex,
-      blockNumber: event.transaction.blockNumber,
+      blockNumber: Number(event.transaction.blockNumber),
       timestamp,
     },
   })
