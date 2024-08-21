@@ -1,6 +1,5 @@
 import type { Context } from "@/generated"
 import type { UserEvent } from "@indexer/types"
-import { replaceBigInts } from "@ponder/core"
 import { ERC20 } from "abis/ERC20"
 import type { Address } from "viem"
 
@@ -13,10 +12,10 @@ async function readTokenBalance(context: Context, fan: Address, stableCoin: Addr
       args: [fan],
     })
 
-    return result
+    return Number(result)
   } catch (error) {
     console.warn(`WARN: Function call 'balanceOf' failed, token: ${stableCoin}, args: ${[fan]}`)
-    return 0n
+    return 0
   }
 }
 
@@ -25,7 +24,7 @@ export async function upsertFan(context: Context, event: UserEvent) {
   const contractData = await context.db.Contract.findUnique({ id: event.log.address })
   if (!contractData) console.warn(`WARN: Contract not found, address: ${event.log.address}`)
 
-  let tokenBalance = 0n
+  let tokenBalance = 0
   if (contractData) tokenBalance = await readTokenBalance(context, event.args.fan, contractData.stableCoin as Address)
 
   return await context.db.Fan.upsert({
@@ -33,12 +32,9 @@ export async function upsertFan(context: Context, event: UserEvent) {
     create: {
       eventCount: 1,
       contracts: [event.log.address.toLowerCase() as Address],
-      tokenBalances: replaceBigInts(
-        {
-          [contractData?.stableCoin as Address]: tokenBalance,
-        },
-        String,
-      ),
+      tokenBalances: {
+        [contractData?.stableCoin as Address]: tokenBalance,
+      },
       // Timestamps
       createdAt: timestamp,
       updatedAt: timestamp,
@@ -47,13 +43,10 @@ export async function upsertFan(context: Context, event: UserEvent) {
     update: ({ current }) => ({
       eventCount: current.eventCount + 1,
       contracts: Array.from(new Set([...current.contracts, event.log.address.toLowerCase() as Address])),
-      tokenBalances: replaceBigInts(
-        {
-          ...current.tokenBalances,
-          [contractData?.stableCoin as Address]: tokenBalance,
-        },
-        String,
-      ),
+      tokenBalances: {
+        ...current.tokenBalances,
+        [contractData?.stableCoin as Address]: tokenBalance,
+      },
       // Timestamps
       updatedAt: timestamp,
       lastEventId: event.log.id,

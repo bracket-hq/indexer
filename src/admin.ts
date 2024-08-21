@@ -13,7 +13,7 @@ export async function createAdminEvent(context: Context, event: AdminEvent) {
       // Timestamps
       hash: event.transaction.hash,
       logIndex: event.log.logIndex,
-      blockNumber: event.transaction.blockNumber,
+      blockNumber: Number(event.transaction.blockNumber),
       timestamp,
     },
   })

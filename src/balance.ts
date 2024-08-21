@@ -1,18 +1,20 @@
 import type { Context } from "@/generated"
 import type { UserEvent } from "@indexer/types"
-import { getEventType } from "@indexer/utils"
+import { formatPrice, getEventType, isUsdc } from "@indexer/utils"
+import type { Address } from "viem"
 
-function getPriceAndAmount(event: UserEvent) {
+async function getPrice(context: Context, event: UserEvent) {
   const eventType = getEventType(event)
-  const { voteAmount } = event.args
+  const { stableCoin } = (await context.db.Contract.findUnique({ id: event.log.address })) ?? {}
+  const decimals = isUsdc(stableCoin as Address) ? 6 : 18
 
-  if (eventType === "buy" && "price" in event.args) return { price: event.args.price.total, voteAmount }
-  if (eventType === "sell" && "price" in event.args) return { price: event.args.price.total, voteAmount }
-  if (eventType === "redeem" && "value" in event.args) return { price: event.args.value, voteAmount }
-  if (eventType === "transfer") return { price: 0n, voteAmount }
+  if (eventType === "buy" && "price" in event.args) return formatPrice(event.args.price.total, decimals)
+  if (eventType === "sell" && "price" in event.args) return formatPrice(event.args.price.total, decimals)
+  if (eventType === "redeem" && "value" in event.args) return formatPrice(event.args.value, decimals)
+  if (eventType === "transfer") return 0
 
   console.warn(`WARN: Unknown event type, log id: ${event.log.id}`)
-  return { price: 0n, voteAmount: 0n }
+  return 0
 }
 
 export async function upsertBalance(context: Context, event: UserEvent) {
@@ -21,26 +23,26 @@ export async function upsertBalance(context: Context, event: UserEvent) {
   if (eventType === "collective") return
 
   const timestamp = Number(event.block.timestamp)
-  const { fan, collective, fanVotes } = event.args
+  const { fan, collective, fanVotes, voteAmount } = event.args
 
   // Derived values
   const isBuy = ["buy", "transfer"].includes(eventType)
-  const { price, voteAmount } = getPriceAndAmount(event)
+  const price = await getPrice(context, event)
 
   return await context.db.Balance.upsert({
     id: `${fan}-${collective}`,
     create: {
       fan,
       collective,
-      fanVotes,
+      fanVotes: Number(fanVotes),
       // Profit & loss
-      totalBuyPrice: isBuy ? price : 0n,
-      totalBuyVotes: isBuy ? voteAmount : 0n,
-      totalSellPrice: isBuy ? 0n : price,
-      totalSellVotes: isBuy ? 0n : voteAmount,
-      averageBuyPrice: isBuy ? price / voteAmount : 0n,
-      averageSellPrice: isBuy ? 0n : price / voteAmount,
-      realizedProfitLoss: 0n,
+      totalBuyPrice: isBuy ? price : 0,
+      totalBuyVotes: isBuy ? Number(voteAmount) : 0,
+      totalSellPrice: isBuy ? 0 : price,
+      totalSellVotes: isBuy ? 0 : Number(voteAmount),
+      averageBuyPrice: isBuy ? price / Number(voteAmount) : 0,
+      averageSellPrice: isBuy ? 0 : price / Number(voteAmount),
+      realizedProfitLoss: 0,
       // Timestamps
       createdAt: timestamp,
       updatedAt: timestamp,
@@ -48,24 +50,24 @@ export async function upsertBalance(context: Context, event: UserEvent) {
     },
     update: ({ current }) => {
       const totalBuyPrice = isBuy ? current.totalBuyPrice + price : current.totalBuyPrice
-      const totalBuyVotes = isBuy ? current.totalBuyVotes + voteAmount : current.totalBuyVotes
+      const totalBuyVotes = isBuy ? current.totalBuyVotes + Number(voteAmount) : current.totalBuyVotes
       const totalSellPrice = isBuy ? current.totalSellPrice : current.totalSellPrice + price
-      const totalSellVotes = isBuy ? current.totalSellVotes : current.totalSellVotes + voteAmount
+      const totalSellVotes = isBuy ? current.totalSellVotes : current.totalSellVotes + Number(voteAmount)
 
       // Calculate realized PnL
       const realizedProfitLoss = isBuy
         ? current.realizedProfitLoss
-        : current.realizedProfitLoss + (price - current.averageBuyPrice * voteAmount)
+        : current.realizedProfitLoss + (price - current.averageBuyPrice * Number(voteAmount))
 
       return {
-        fanVotes,
+        fanVotes: Number(fanVotes),
         // Profit & loss
         totalBuyPrice: totalBuyPrice,
         totalBuyVotes: totalBuyVotes,
         totalSellPrice: totalSellPrice,
         totalSellVotes: totalSellVotes,
-        averageBuyPrice: totalBuyVotes > 0n ? totalBuyPrice / totalBuyVotes : 0n,
-        averageSellPrice: totalSellVotes > 0n ? totalSellPrice / totalSellVotes : 0n,
+        averageBuyPrice: totalBuyVotes > 0 ? totalBuyPrice / totalBuyVotes : 0,
+        averageSellPrice: totalSellVotes > 0 ? totalSellPrice / totalSellVotes : 0,
         realizedProfitLoss,
         // Timestamps
         updatedAt: timestamp,

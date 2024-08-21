@@ -13,9 +13,18 @@ async function readSeasonNow(context: Context, address: Address) {
     })) as SeasonNow
 
     // NOTE: roundsN is not present in early contracts, so we ignore it
-    const { roundsN, ...seasonNow } = result ?? {}
+    const { isDistributed, isVerified, startBlock, endBlock, prizePool, distributedPool, winningBreakdown } =
+      result ?? {}
 
-    return seasonNow
+    return {
+      isDistributed,
+      isVerified,
+      startBlock: Number(startBlock),
+      endBlock: Number(endBlock),
+      prizePool: Number(prizePool),
+      distributedPool: Number(distributedPool),
+      winningBreakdown: winningBreakdown.map(Number),
+    }
   } catch (error) {
     console.error(`ERROR: Function call 'seasonNow' failed, address: ${address}`)
     return
@@ -29,7 +38,7 @@ async function readContractMulticall(context: Context, address: Address) {
       address,
     } as const
 
-    const [owner, stableCoin, claimerAccount, currentSeason, curveDenominator, txPaused, feeStructure, rawSeasonNow] =
+    const [owner, stableCoin, claimerAccount, currentSeason, curveDenominator, txPaused, feeStructure, seasonNow] =
       await context.client
         .multicall({
           contracts: [
@@ -62,20 +71,27 @@ async function readContractMulticall(context: Context, address: Address) {
     const [poolPct, collectivePct, protocolPct, protocolDestination] = feeStructure
 
     // NOTE: roundsN is not present in early contracts, so we ignore it
-    const { roundsN, ...seasonNow } = rawSeasonNow ?? {}
+    const { isDistributed, isVerified, startBlock, endBlock, prizePool, distributedPool, winningBreakdown } =
+      seasonNow ?? {}
 
     return {
       owner,
       stableCoin,
       claimerAccount,
-      currentSeason,
-      curveDenominator,
+      currentSeason: Number(currentSeason),
+      curveDenominator: Number(curveDenominator),
       txPaused,
-      poolPct,
-      collectivePct,
-      protocolPct,
+      poolPct: Number(poolPct),
+      collectivePct: Number(collectivePct),
+      protocolPct: Number(protocolPct),
       protocolDestination,
-      ...seasonNow,
+      isDistributed,
+      isVerified,
+      startBlock: Number(startBlock),
+      endBlock: Number(endBlock),
+      prizePool: Number(prizePool),
+      distributedPool: Number(distributedPool),
+      winningBreakdown: winningBreakdown.map(Number),
     }
   } catch (error) {
     console.error(`ERROR: Contract multicall failed, address: ${address}`)
