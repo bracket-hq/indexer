@@ -18,20 +18,20 @@ export type ContractData = {
   owner: Address
   stableCoin: Address
   claimerAccount: Address
-  currentSeason: number
-  curveDenominator: number
+  currentSeason: bigint
+  curveDenominator: bigint
   txPaused: boolean
-  poolPct: number
-  collectivePct: number
-  protocolPct: number
+  poolPct: bigint
+  collectivePct: bigint
+  protocolPct: bigint
   protocolDestination: Address
   isDistributed: boolean
   isVerified: boolean
-  startBlock: number
-  endBlock: number
-  prizePool: number
-  distributedPool: number
-  winningBreakdown: number[]
+  startBlock: bigint
+  endBlock: bigint
+  prizePool: bigint
+  distributedPool: bigint
+  winningBreakdown: bigint[]
 }
 
 export type EventType = "buy" | "sell" | "transfer" | "redeem" | "collective" | "unknown"

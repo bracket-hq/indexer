@@ -1,38 +1,34 @@
 import type { Context } from "@/generated"
 import type { EventType, UserEvent } from "@indexer/types"
-import { formatPrice, getEventType, isUsdc } from "@indexer/utils"
-import type { Address } from "viem"
+import { getEventType } from "./utils"
 
-async function getPrices(context: Context, event: UserEvent, eventType: EventType) {
-  const { stableCoin } = (await context.db.Contract.findUnique({ id: event.log.address })) ?? {}
-  const decimals = isUsdc(stableCoin as Address) ? 6 : 18
-
+function getPrices(event: UserEvent, eventType: EventType) {
   const defaultPrices = {
-    priceBase: 0,
-    pricePoolFee: 0,
-    priceProtocolFee: 0,
-    priceCollectiveFee: 0,
-    priceTotalFee: 0,
-    priceTotal: 0,
-    pricePerVote: 0,
+    priceBase: 0n,
+    pricePoolFee: 0n,
+    priceProtocolFee: 0n,
+    priceCollectiveFee: 0n,
+    priceTotalFee: 0n,
+    priceTotal: 0n,
+    pricePerVote: 0n,
   }
 
   if (["buy", "sell", "collective"].includes(eventType) && "price" in event.args) {
     return {
-      priceBase: formatPrice(event.args.price.base, decimals),
-      pricePoolFee: formatPrice(event.args.price.poolFee, decimals),
-      priceProtocolFee: formatPrice(event.args.price.protocolFee, decimals),
-      priceCollectiveFee: formatPrice(event.args.price.collectiveFee, decimals),
-      priceTotalFee: formatPrice(event.args.price.totalFee, decimals),
-      priceTotal: formatPrice(event.args.price.total, decimals),
-      pricePerVote: formatPrice(event.args.price.perVote, decimals),
+      priceBase: event.args.price.base,
+      pricePoolFee: event.args.price.poolFee,
+      priceProtocolFee: event.args.price.protocolFee,
+      priceCollectiveFee: event.args.price.collectiveFee,
+      priceTotalFee: event.args.price.totalFee,
+      priceTotal: event.args.price.total,
+      pricePerVote: event.args.price.perVote,
     }
   }
   if (eventType === "redeem" && "value" in event.args) {
     return {
       ...defaultPrices,
-      priceBase: formatPrice(event.args.value, decimals),
-      priceTotal: formatPrice(event.args.value, decimals),
+      priceBase: event.args.value,
+      priceTotal: event.args.value,
     }
   }
 
@@ -44,11 +40,7 @@ export async function createEvent(context: Context, event: UserEvent) {
   const timestamp = Number(event.block.timestamp)
   const eventType = getEventType(event)
 
-  const priceData = await getPrices(context, event, eventType)
-  if (!priceData) {
-    console.error(`ERROR: Unable to get prices for log id ${event.log.id}`)
-    return
-  }
+  const priceData = getPrices(event, eventType)
 
   return await context.db.Event.create({
     id: event.log.id,
@@ -58,15 +50,15 @@ export async function createEvent(context: Context, event: UserEvent) {
       contractId: event.log.address,
       eventType,
       // Vote information
-      voteAmount: Number(event.args.voteAmount),
-      fanVotes: Number(event.args.fanVotes),
-      supply: Number(event.args.supply),
+      voteAmount: event.args.voteAmount,
+      fanVotes: event.args.fanVotes,
+      supply: event.args.supply,
       // Price information
       ...priceData,
       // Timestamps
       hash: event.transaction.hash,
       logIndex: event.log.logIndex,
-      blockNumber: Number(event.transaction.blockNumber),
+      blockNumber: event.transaction.blockNumber,
       timestamp,
     },
   })

@@ -1,10 +1,9 @@
 import type { Context, Event } from "@/generated"
 import type { UserEvent } from "@indexer/types"
-import { formatPrice, isUsdc } from "@indexer/utils"
 import { ERC20 } from "abis/ERC20"
 import type { Address } from "viem"
 
-const ONE_DAY_OF_BLOCKS = 43_200
+const ONE_DAY_OF_BLOCKS = 43_200n
 
 async function readCollectiveVotes(context: Context, contract: Address, collective: Address) {
   try {
@@ -17,12 +16,12 @@ async function readCollectiveVotes(context: Context, contract: Address, collecti
 
     return {
       name: result[0],
-      voteCount: Number(result[1]),
-      burntVoteCount: Number(result[2]),
+      voteCount: result[1],
+      burntVoteCount: result[2],
     }
   } catch (error) {
     console.warn(`WARN: Function call 'collectives' failed, contract: ${contract}, args: ${[collective]}`)
-    return { name: "", voteCount: 0, burntVoteCount: 0 }
+    return { name: "", voteCount: 0n, burntVoteCount: 0n }
   }
 }
 
@@ -40,14 +39,14 @@ async function readClaimerVotes(context: Context, contract: Address, collective:
       args: [claimerAccount as Address, collective],
     })
 
-    return Number(result)
+    return result
   } catch (error) {
     console.warn(`WARN: Function call 'balanceOf' failed, contract: ${contract}, args: ${[claimerAccount, collective]}`)
-    return 0
+    return 0n
   }
 }
 
-async function readTreasuryValue(context: Context, collective: Address, token: Address, decimals: number) {
+async function readTreasuryValue(context: Context, token: Address, collective: Address) {
   try {
     const result = await context.client.readContract({
       abi: ERC20,
@@ -56,10 +55,10 @@ async function readTreasuryValue(context: Context, collective: Address, token: A
       args: [collective],
     })
 
-    return formatPrice(result, decimals)
+    return result
   } catch (error) {
     console.warn(`WARN: Function call 'balanceOf' failed, token: ${token}, args: ${[collective]}`)
-    return 0
+    return 0n
   }
 }
 
@@ -70,7 +69,7 @@ async function calculatePercentChange(context: Context, event: UserEvent) {
     where: {
       collectiveId: event.args.collective,
       blockNumber: {
-        gte: Number(event.transaction.blockNumber) - ONE_DAY_OF_BLOCKS,
+        gte: event.transaction.blockNumber - ONE_DAY_OF_BLOCKS,
       },
       OR: [{ eventType: "buy" }, { eventType: "sell" }],
     },
@@ -86,9 +85,9 @@ async function calculatePercentChange(context: Context, event: UserEvent) {
 }
 
 function getPrice(event: UserEvent) {
-  if ("price" in event.args) return Number(event.args.price.base)
-  if ("value" in event.args) return Number(event.args.value)
-  return 0
+  if ("price" in event.args) return event.args.price.base
+  if ("value" in event.args) return event.args.value
+  return 0n
 }
 
 function getPosition(
@@ -97,8 +96,8 @@ function getPosition(
     | Event<"BG_Beta:OraclewinPositionVerified">
     | Event<"BG_Beta:SetCollectiveFanbase">,
 ) {
-  if ("exitRound" in event.args) return Number(event.args.exitRound)
-  if ("round" in event.args) return Number(event.args.round)
+  if ("exitRound" in event.args) return event.args.exitRound
+  if ("round" in event.args) return event.args.round
   return undefined
 }
 
@@ -111,17 +110,9 @@ export async function upsertCollective(context: Context, event: UserEvent) {
   const { voteCount, burntVoteCount } = await readCollectiveVotes(context, event.log.address, event.args.collective)
   const claimerVoteCount = await readClaimerVotes(context, event.log.address, event.args.collective)
 
-  let treasuryValue = 0
-  if (contractData) {
-    const decimals = isUsdc(contractData.stableCoin as Address) ? 6 : 18
-
-    treasuryValue = await readTreasuryValue(
-      context,
-      event.args.collective,
-      contractData.stableCoin as Address,
-      decimals,
-    )
-  }
+  let treasuryValue = 0n
+  if (contractData)
+    treasuryValue = await readTreasuryValue(context, contractData.stableCoin as Address, event.args.collective)
 
   // Derived values
   const price = getPrice(event)
@@ -134,11 +125,11 @@ export async function upsertCollective(context: Context, event: UserEvent) {
     id: event.args.collective,
     create: {
       price,
-      fanCount: 1,
-      voteCount: 1,
-      burntVoteCount: 0,
-      claimerVoteCount: 0,
-      treasuryValue: 0,
+      fanCount: 1n,
+      voteCount: 1n,
+      burntVoteCount: 0n,
+      claimerVoteCount: 0n,
+      treasuryValue: 0n,
       percentChange: 0,
       contractId: event.log.address,
       // Timestamps
@@ -148,7 +139,7 @@ export async function upsertCollective(context: Context, event: UserEvent) {
     },
     update: ({ current }) => ({
       price,
-      fanCount: current.fanCount + (!fanBalance ? 1 : event.args.fanVotes === 0n ? -1 : 0),
+      fanCount: current.fanCount + (!fanBalance ? 1n : event.args.fanVotes === 0n ? -1n : 0n),
       voteCount,
       burntVoteCount,
       claimerVoteCount,
@@ -177,17 +168,9 @@ export async function updateCollectiveAdmin(
   const { voteCount, burntVoteCount } = await readCollectiveVotes(context, event.log.address, event.args.collective)
   const claimerVoteCount = await readClaimerVotes(context, event.log.address, event.args.collective)
 
-  let treasuryValue = 0
-  if (contractData) {
-    const decimals = isUsdc(contractData.stableCoin as Address) ? 6 : 18
-
-    treasuryValue = await readTreasuryValue(
-      context,
-      event.args.collective,
-      contractData.stableCoin as Address,
-      decimals,
-    )
-  }
+  let treasuryValue = 0n
+  if (contractData)
+    treasuryValue = await readTreasuryValue(context, contractData.stableCoin as Address, event.args.collective)
 
   // Derived values
   const position = getPosition(event)
@@ -196,12 +179,12 @@ export async function updateCollectiveAdmin(
   return await context.db.Collective.upsert({
     id: event.args.collective,
     create: {
-      price: 0,
-      fanCount: 1,
-      voteCount: 1,
-      burntVoteCount: 0,
-      claimerVoteCount: 0,
-      treasuryValue: 0,
+      price: 1n,
+      fanCount: 1n,
+      voteCount: 1n,
+      burntVoteCount: 0n,
+      claimerVoteCount: 0n,
+      treasuryValue: 0n,
       percentChange: 0,
       contractId: event.log.address,
       // Timestamps
