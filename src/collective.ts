@@ -118,7 +118,7 @@ export async function upsertCollective(context: Context, event: UserEvent) {
   const price = getPrice(event)
   const percentChange = await calculatePercentChange(context, event)
   const fanBalance = await context.db.Balance.findUnique({
-    id: `${event.args.fan}:${event.args.collective}`,
+    id: `${event.args.fan}-${event.args.collective}`,
   })
 
   return await context.db.Collective.upsert({
