@@ -104,6 +104,8 @@ export default createConfig({
               "0xa9a7dC4851c5E3Ac7F3ccD107644EecfE8224263", // 13080339, parisgolf
               "0x8407B357165848fFea64CBbCf740B9B9EED30B3D", // 13080378, paristennis
               "0x2910427Dd4B542d592d0e3B3363400d78aa7B5FA", // 13080459, parisgymnastics
+              "0x3CBBb44790277BcB6401e17D6AE44f878C6e6300", // 14765994, nfl25
+              "0xFDB3509C91831d3bad0e2bec844d94538E9f5d77", // 14768390, nfl25w1
             ],
           },
   },
