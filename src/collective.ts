@@ -85,9 +85,8 @@ async function calculatePercentChange(context: Context, event: UserEvent) {
 }
 
 function getPrice(event: UserEvent) {
-  if ("price" in event.args) return event.args.price.base
-  if ("value" in event.args) return event.args.value
-  return 0n
+  if ("price" in event.args && "perVote" in event.args.price) return event.args.price.perVote
+  return undefined
 }
 
 function getPosition(
@@ -115,7 +114,7 @@ export async function upsertCollective(context: Context, event: UserEvent) {
     treasuryValue = await readTreasuryValue(context, contractData.stableCoin as Address, event.args.collective)
 
   // Derived values
-  const price = getPrice(event)
+  const newPrice = getPrice(event)
   const percentChange = await calculatePercentChange(context, event)
   const fanBalance = await context.db.Balance.findUnique({
     id: `${event.args.fan}-${event.args.collective}`,
@@ -124,7 +123,7 @@ export async function upsertCollective(context: Context, event: UserEvent) {
   return await context.db.Collective.upsert({
     id: event.args.collective,
     create: {
-      price,
+      price: newPrice ?? 0n,
       fanCount: 1,
       voteCount: 1,
       burntVoteCount: 0,
@@ -138,7 +137,7 @@ export async function upsertCollective(context: Context, event: UserEvent) {
       lastEventId: event.log.id,
     },
     update: ({ current }) => ({
-      price,
+      price: newPrice ?? current.price,
       fanCount: current.fanCount + (!fanBalance ? 1 : event.args.fanVotes === 0n ? -1 : 0),
       voteCount,
       burntVoteCount,
