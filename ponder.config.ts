@@ -87,6 +87,8 @@ export default createConfig({
               "0xa38154a41156B128D01d333c11F8C22C46D4C7A8", // 17832605, basecamp
               "0x91F468Ee2131c20d7195eE2F80E0fd49DCB1AeB5", // 17832725, basecamp2
               "0x1368a114A9BcB2C30696CE5CA76B869e34aD9C53", // 17832804, basecamphigher
+              "0x10106a3620088b7f95B272374Bd73AA623a512fe", // 19340773, nfl25
+              "0x85f42c83D56FacAa1593334EC869a2A36bd03174", // 19341481, nfl25w1
             ],
           }
         : {
