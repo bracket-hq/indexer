@@ -34,6 +34,7 @@ export async function upsertBalance(context: Context, event: UserEvent) {
       fan,
       collective,
       fanVotes,
+      contractId: event.log.address,
       // Profit & loss
       totalBuyPrice: isBuy ? price : 0n,
       totalBuyVotes: isBuy ? voteAmount : 0,

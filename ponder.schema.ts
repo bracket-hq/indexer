@@ -25,6 +25,7 @@ export default createSchema((p) => ({
       fan: p.string(), // Fan address
       collective: p.string(), // Collective address
       fanVotes: p.int(), // Current balance of votes for this fan
+      contractId: p.string().references("Contract.id"), // Contract address
       // Profit & loss
       totalBuyPrice: p.bigint(), // Cumulative amount spent on all purchases
       totalBuyVotes: p.int(), // Cumulative number of votes acquired
@@ -41,6 +42,7 @@ export default createSchema((p) => ({
     {
       fanIndex: p.index("fan"),
       collectiveIndex: p.index("collective"),
+      contractIndex: p.index("contractId"),
       fanCollectiveIndex: p.index(["fan", "collective"]),
     },
   ),
