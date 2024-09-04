@@ -1,17 +1,18 @@
 import { type ReplaceBigInts, createSchema } from "@ponder/core"
 import type { Address } from "viem"
 
+// TODO: Replace p.string() with p.hex() for addresses?
 export default createSchema((p) => ({
   AdminEvent: p.createTable(
     {
       id: p.string(),
-      from: p.hex(),
-      input: p.hex(),
-      contractId: p.hex().references("Contract.id"),
+      from: p.string(), // Admin address
+      input: p.string(), // Input data
+      contractId: p.string().references("Contract.id"), // Contract address
       // Timestamps
-      hash: p.hex(),
+      hash: p.string(), // Transaction hash
       logIndex: p.int(),
-      blockNumber: p.bigint(),
+      blockNumber: p.int(),
       timestamp: p.int(),
     },
     {
@@ -21,14 +22,15 @@ export default createSchema((p) => ({
   Balance: p.createTable(
     {
       id: p.string(), // Composite key of fan and collective
-      fan: p.hex(),
-      collective: p.hex(),
-      fanVotes: p.bigint(), // Current balance of votes for this fan
+      fan: p.string(), // Fan address
+      collective: p.string(), // Collective address
+      fanVotes: p.int(), // Current balance of votes for this fan
+      contractId: p.string().references("Contract.id"), // Contract address
       // Profit & loss
       totalBuyPrice: p.bigint(), // Cumulative amount spent on all purchases
-      totalBuyVotes: p.bigint(), // Cumulative number of votes acquired
+      totalBuyVotes: p.int(), // Cumulative number of votes acquired
       totalSellPrice: p.bigint(), // Cumulative amount received from all sells
-      totalSellVotes: p.bigint(), // Cumulative number of votes sold
+      totalSellVotes: p.int(), // Cumulative number of votes sold
       averageBuyPrice: p.bigint(), // Average price paid per vote across all purchases
       averageSellPrice: p.bigint(), // Average price received per vote across all sells
       realizedProfitLoss: p.bigint(), // Cumulative profit/loss from completed sell transactions
@@ -40,20 +42,21 @@ export default createSchema((p) => ({
     {
       fanIndex: p.index("fan"),
       collectiveIndex: p.index("collective"),
+      contractIndex: p.index("contractId"),
       fanCollectiveIndex: p.index(["fan", "collective"]),
     },
   ),
   Collective: p.createTable(
     {
-      id: p.hex(), // Collective address
+      id: p.string(), // Collective address
       price: p.bigint(),
-      fanCount: p.bigint(),
-      voteCount: p.bigint(),
-      burntVoteCount: p.bigint(),
-      claimerVoteCount: p.bigint(),
-      position: p.bigint().optional(),
+      fanCount: p.int(),
+      voteCount: p.int(),
+      burntVoteCount: p.int(),
+      claimerVoteCount: p.int(),
+      position: p.int().optional(),
       fanbase: p.string().optional(),
-      contractId: p.hex().references("Contract.id"),
+      contractId: p.string().references("Contract.id"), // Contract address
       treasuryValue: p.bigint(), // Multisig's balance of the stableCoin
       percentChange: p.float(), // Percent change in price in the last 24 hours
       // Timestamps
@@ -66,43 +69,43 @@ export default createSchema((p) => ({
     },
   ),
   Contract: p.createTable({
-    id: p.hex(), // Contract address
-    owner: p.hex(),
-    stableCoin: p.hex(),
-    claimerAccount: p.hex(),
-    currentSeason: p.bigint(),
-    curveDenominator: p.bigint(),
+    id: p.string(), // Contract address
+    owner: p.string(), // Owner address
+    stableCoin: p.string(), // Stablecoin address
+    claimerAccount: p.string(), // Claimer address
+    currentSeason: p.int(),
+    curveDenominator: p.int(),
     txPaused: p.boolean(),
     // Fee structure
-    poolPct: p.bigint(),
-    collectivePct: p.bigint(),
-    protocolPct: p.bigint(),
-    protocolDestination: p.hex(),
+    poolPct: p.int(),
+    collectivePct: p.int(),
+    protocolPct: p.int(),
+    protocolDestination: p.string(), // Protocol address
     // Season now
     isDistributed: p.boolean(),
     isVerified: p.boolean(),
-    startBlock: p.bigint(),
-    endBlock: p.bigint(),
+    startBlock: p.int(),
+    endBlock: p.int(),
     prizePool: p.bigint(),
     distributedPool: p.bigint(),
-    winningBreakdown: p.bigint().list(), // Basis points
+    winningBreakdown: p.int().list(), // Basis points
     // Timestamps
     createdAt: p.int(),
     updatedAt: p.int(),
     lastEventId: p.string().references("Event.id"),
   }),
-  EventType: p.createEnum(["buy", "sell", "redeem", "transfer", "unknown"]),
+  EventType: p.createEnum(["buy", "sell", "redeem", "transfer", "collective", "unknown"]),
   Event: p.createTable(
     {
       id: p.string(),
-      fanId: p.hex().references("Fan.id"), // Fan address
-      collectiveId: p.hex().references("Collective.id"), // Collective address
-      contractId: p.hex().references("Contract.id"), // Contract address
+      fanId: p.string().references("Fan.id"), // Fan address
+      collectiveId: p.string().references("Collective.id"), // Collective address
+      contractId: p.string().references("Contract.id"), // Contract address
       eventType: p.enum("EventType"),
       // Vote information
-      voteAmount: p.bigint(),
-      fanVotes: p.bigint(),
-      supply: p.bigint(),
+      voteAmount: p.int(),
+      fanVotes: p.int(),
+      supply: p.int(),
       // Price information
       priceBase: p.bigint(),
       pricePoolFee: p.bigint(),
@@ -112,9 +115,9 @@ export default createSchema((p) => ({
       priceTotal: p.bigint(),
       pricePerVote: p.bigint(),
       // Timestamps
-      hash: p.hex(),
+      hash: p.string(), // Transaction hash
       logIndex: p.int(),
-      blockNumber: p.bigint(),
+      blockNumber: p.int(),
       timestamp: p.int(),
     },
     {
@@ -125,9 +128,9 @@ export default createSchema((p) => ({
     },
   ),
   Fan: p.createTable({
-    id: p.hex(), // Fan address
+    id: p.string(), // Fan address
     eventCount: p.int(), // Number of events the fan has participated in
-    contracts: p.hex().list(), // List of contract addresses the fan has used
+    contracts: p.string().list(), // List of contract addresses the fan has used
     tokenBalances: p.json<ReplaceBigInts<{ [key: Address]: bigint }, string>>().optional(),
     // Timestamps
     createdAt: p.int(),

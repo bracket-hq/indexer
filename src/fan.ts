@@ -5,18 +5,19 @@ import { ERC20 } from "abis/ERC20"
 import type { Address } from "viem"
 
 async function readTokenBalance(context: Context, fan: Address, stableCoin: Address) {
-  const result = await context.client.readContract({
-    abi: ERC20,
-    address: stableCoin,
-    functionName: "balanceOf",
-    args: [fan],
-  })
-  if (result === undefined || result === null) {
+  try {
+    const result = await context.client.readContract({
+      abi: ERC20,
+      address: stableCoin,
+      functionName: "balanceOf",
+      args: [fan],
+    })
+
+    return result
+  } catch (error) {
     console.warn(`WARN: Function call 'balanceOf' failed, token: ${stableCoin}, args: ${[fan]}`)
     return 0n
   }
-
-  return result
 }
 
 export async function upsertFan(context: Context, event: UserEvent) {
@@ -25,7 +26,7 @@ export async function upsertFan(context: Context, event: UserEvent) {
   if (!contractData) console.warn(`WARN: Contract not found, address: ${event.log.address}`)
 
   let tokenBalance = 0n
-  if (contractData) tokenBalance = await readTokenBalance(context, event.args.fan, contractData.stableCoin)
+  if (contractData) tokenBalance = await readTokenBalance(context, event.args.fan, contractData.stableCoin as Address)
 
   return await context.db.Fan.upsert({
     id: event.args.fan,

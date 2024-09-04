@@ -1,8 +1,8 @@
 import type { Context } from "@/generated"
-import type { UserEvent } from "@indexer/types"
+import type { EventType, UserEvent } from "@indexer/types"
 import { getEventType } from "./utils"
 
-function getPrices(event: UserEvent, eventType: "buy" | "sell" | "redeem" | "transfer" | "unknown") {
+function getPrices(event: UserEvent, eventType: EventType) {
   const defaultPrices = {
     priceBase: 0n,
     pricePoolFee: 0n,
@@ -13,7 +13,7 @@ function getPrices(event: UserEvent, eventType: "buy" | "sell" | "redeem" | "tra
     pricePerVote: 0n,
   }
 
-  if (["buy", "sell"].includes(eventType) && "price" in event.args) {
+  if (["buy", "sell", "collective"].includes(eventType) && "price" in event.args) {
     return {
       priceBase: event.args.price.base,
       pricePoolFee: event.args.price.poolFee,
@@ -50,15 +50,15 @@ export async function createEvent(context: Context, event: UserEvent) {
       contractId: event.log.address,
       eventType,
       // Vote information
-      voteAmount: event.args.voteAmount,
-      fanVotes: event.args.fanVotes,
-      supply: event.args.supply,
+      voteAmount: Number(event.args.voteAmount),
+      fanVotes: Number(event.args.fanVotes),
+      supply: Number(event.args.supply),
       // Price information
       ...priceData,
       // Timestamps
       hash: event.transaction.hash,
       logIndex: event.log.logIndex,
-      blockNumber: event.transaction.blockNumber,
+      blockNumber: Number(event.transaction.blockNumber),
       timestamp,
     },
   })
