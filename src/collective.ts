@@ -3,7 +3,8 @@ import type { UserEvent } from "@indexer/types"
 import { ERC20 } from "abis/ERC20"
 import type { Address } from "viem"
 
-const ONE_DAY_OF_BLOCKS = 43_200
+// const ONE_DAY_OF_BLOCKS = 43_200
+const THIRTY_MINUTES_OF_BLOCKS = 900
 
 async function readCollectiveVotes(context: Context, contract: Address, collective: Address) {
   try {
@@ -69,7 +70,7 @@ async function calculatePercentChange(context: Context, event: UserEvent) {
     where: {
       collectiveId: event.args.collective,
       blockNumber: {
-        gte: Number(event.transaction.blockNumber) - ONE_DAY_OF_BLOCKS,
+        gte: Number(event.transaction.blockNumber) - THIRTY_MINUTES_OF_BLOCKS, // ONE_DAY_OF_BLOCKS
       },
       OR: [{ eventType: "buy" }, { eventType: "sell" }],
     },
@@ -124,7 +125,7 @@ export async function upsertCollective(context: Context, event: UserEvent) {
     id: event.args.collective,
     create: {
       price: newPrice ?? 0n,
-      fanCount: 1,
+      fanCount: 0,
       voteCount: 1,
       burntVoteCount: 0,
       claimerVoteCount: 0,
@@ -179,7 +180,7 @@ export async function updateCollectiveAdmin(
     id: event.args.collective,
     create: {
       price: 0n,
-      fanCount: 1,
+      fanCount: 0,
       voteCount: 1,
       burntVoteCount: 0,
       claimerVoteCount: 0,
