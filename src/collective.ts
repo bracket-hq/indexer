@@ -3,9 +3,6 @@ import type { UserEvent } from "@indexer/types"
 import { ERC20 } from "abis/ERC20"
 import type { Address } from "viem"
 
-// const ONE_DAY_OF_BLOCKS = 43_200
-const THIRTY_MINUTES_OF_BLOCKS = 900
-
 async function readCollectiveVotes(context: Context, contract: Address, collective: Address) {
   try {
     const result = await context.client.readContract({
