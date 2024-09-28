@@ -58,7 +58,6 @@ export default createSchema((p) => ({
       fanbase: p.string().optional(),
       contractId: p.string().references("Contract.id"), // Contract address
       treasuryValue: p.bigint(), // Multisig's balance of the stableCoin
-      percentChange: p.float(), // Percent change in price in the last 24 hours
       // Timestamps
       createdAt: p.int(),
       updatedAt: p.int(),
