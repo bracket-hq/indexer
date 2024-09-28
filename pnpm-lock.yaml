@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@ponder/core':
-    specifier: 0.5.19
-    version: 0.5.19(@types/node@20.14.9)(hono@4.5.5)(typescript@5.5.3)(viem@2.19.6)
+    specifier: 0.5.24
+    version: 0.5.24(@types/node@20.14.9)(hono@4.5.5)(typescript@5.5.3)(viem@2.19.6)
   hono:
     specifier: 4.5.5
     version: 4.5.5
@@ -679,9 +679,13 @@ packages:
       tslib: 2.6.3
     dev: false
 
-  /@hono/node-server@1.12.1:
-    resolution: {integrity: sha512-C9l+08O8xtXB7Ppmy8DjBFH1hYji7JKzsU32Yt1poIIbdPp6S7aOI8IldDHD9YFJ55lv2c21ovNrmxatlHfhAg==}
+  /@hono/node-server@1.13.1(hono@4.5.5):
+    resolution: {integrity: sha512-TSxE6cT5RHnawbjnveexVN7H2Dpn1YaLxQrCOLCUwD+hFbqbFsnJBgdWcYtASqtWVjA+Qgi8uqFug39GsHjo5A==}
     engines: {node: '>=18.14.1'}
+    peerDependencies:
+      hono: ^4
+    dependencies:
+      hono: 4.5.5
     dev: false
 
   /@isaacs/cliui@8.0.2:
@@ -744,8 +748,8 @@ packages:
     dev: false
     optional: true
 
-  /@ponder/core@0.5.19(@types/node@20.14.9)(hono@4.5.5)(typescript@5.5.3)(viem@2.19.6):
-    resolution: {integrity: sha512-eIuGchD+AWkjOtLBO514qUF7fZ56XEzcaiJBNjTdE7/fGRXbitGD+r1nrbeNNBrWIrjl4a6sERKQfPlLipDhpQ==}
+  /@ponder/core@0.5.24(@types/node@20.14.9)(hono@4.5.5)(typescript@5.5.3)(viem@2.19.6):
+    resolution: {integrity: sha512-ZADrYtrZUF8r4rYr0ut5I6PHF1jm8qWxVym+DmbBomeWFvPwq8XzXBLGcdGPeaKr8FLlaKf2iV4U/uYgNf+e/w==}
     engines: {node: '>=18.14'}
     hasBin: true
     peerDependencies:
@@ -761,8 +765,8 @@ packages:
       '@escape.tech/graphql-armor-max-aliases': 2.5.0
       '@escape.tech/graphql-armor-max-depth': 2.3.0
       '@escape.tech/graphql-armor-max-tokens': 2.4.0
-      '@hono/node-server': 1.12.1
-      '@ponder/utils': 0.1.7(typescript@5.5.3)(viem@2.19.6)
+      '@hono/node-server': 1.13.1(hono@4.5.5)
+      '@ponder/utils': 0.1.8(typescript@5.5.3)(viem@2.19.6)
       abitype: 0.10.3(typescript@5.5.3)
       better-sqlite3: 11.2.1
       commander: 12.1.0
@@ -831,8 +835,8 @@ packages:
       - zod
     dev: false
 
-  /@ponder/utils@0.1.7(typescript@5.5.3)(viem@2.19.6):
-    resolution: {integrity: sha512-MZjHG2KMMuIE6/at9SsMUs0vKKY53TSjBcxXa0gLdvcUOa04BGY4LLhzs0Y4c1mVh9sj++lJfbaS1BZ+1yVaIQ==}
+  /@ponder/utils@0.1.8(typescript@5.5.3)(viem@2.19.6):
+    resolution: {integrity: sha512-Ul5HkBAsyy/fJbE35H96NpiPKgA7v/7OJqyHB/08Oq7MilXvvs4ryk7wPXejB18wnwhfu7bfLTCKSvFOG/UEGA==}
     peerDependencies:
       typescript: '>=5.0.4'
       viem: '>=1.16'
