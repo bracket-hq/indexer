@@ -90,6 +90,7 @@ export default createConfig({
               "0x10106a3620088b7f95B272374Bd73AA623a512fe", // 19340773, nfl25
               "0x85f42c83D56FacAa1593334EC869a2A36bd03174", // 19341481, nfl25w1
               "0x341036809e059c092626F9Ad46Eb93D8337472fE", // 19864764, nfl25w2
+              "0x6822B427386C91b428eC4F2E45a51C86307b8FcF", // 20376946, nfl25w4
             ],
           }
         : {
@@ -110,6 +111,7 @@ export default createConfig({
               "0x3CBBb44790277BcB6401e17D6AE44f878C6e6300", // 14765994, nfl25
               "0xFDB3509C91831d3bad0e2bec844d94538E9f5d77", // 14768390, nfl25w1
               "0x700e273b8801c7A85472d484A5BC8BB462Bf3eC6", // 15460339, nfl25w3
+              "0xc6C12820326f49ec08595989827440912401D5A2", // 15887420, nfl25w4
             ],
           },
   },
