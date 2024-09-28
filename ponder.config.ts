@@ -21,7 +21,9 @@ console.info(`INFO: Starting Ponder with NODE_ENV=${process.env.NODE_ENV}`)
 export default createConfig({
   database: {
     kind: "postgres",
-    publishSchema: "indexer",
+    schema: "indexer",
+    // NOTE: publicSchema uses materialized views, which are not supported by PowerSync
+    publishSchema: undefined,
   },
   networks: {
     base: {
@@ -87,7 +89,7 @@ export default createConfig({
               "0x1368a114A9BcB2C30696CE5CA76B869e34aD9C53", // 17832804, basecamphigher
               "0x10106a3620088b7f95B272374Bd73AA623a512fe", // 19340773, nfl25
               "0x85f42c83D56FacAa1593334EC869a2A36bd03174", // 19341481, nfl25w1
-              "0x341036809e059c092626F9Ad46Eb93D8337472fE", // 19864764, nfl25w3
+              "0x341036809e059c092626F9Ad46Eb93D8337472fE", // 19864764, nfl25w2
             ],
           }
         : {

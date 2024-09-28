@@ -12,7 +12,7 @@
     "lint": "pnpm run lint:biome && pnpm run lint:typecheck",
     "lint:biome": "biome check --no-errors-on-unmatched",
     "lint:typecheck": "tsc --noEmit",
-    "start": "ponder start"
+    "start": "env -u RAILWAY_DEPLOYMENT_ID ponder start"
   },
   "simple-git-hooks": {
     "pre-commit": "pnpm exec lint-staged",
@@ -23,7 +23,7 @@
     "package.json": "sort-package-json"
   },
   "dependencies": {
-    "@ponder/core": "0.5.24",
+    "@ponder/core": "0.5.19",
     "hono": "4.5.5",
     "viem": "2.19.6"
   },
