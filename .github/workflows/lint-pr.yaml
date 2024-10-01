@@ -1,20 +1,23 @@
-name: Lint
+name: Lint PR
 run-name: Lint PR to ${{ github.base_ref }} by ${{ github.triggering_actor}}
 on:
   pull_request:
-    branches-ignore: [master, staging]
+    branches-ignore: [master]
     types: [opened, reopened, synchronize]
-
+    
 jobs:
   lint-project:
     runs-on: ubuntu-latest
+    environment:
+      name: dev
+      url: https://dev.bracket.game
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Setup job
-        id: setup-job
-        uses: ./.github/actions/setup-job
+      - name: Setup repo
+        id: setup-repo
+        uses: ./.github/actions/setup-repo
 
       - name: Lint project files
-        run: pnpm run lint
+        run: bun run lint
