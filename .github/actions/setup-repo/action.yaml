@@ -1,4 +1,4 @@
-name: "Setup job"
+name: "Set up repo"
 description: "Checkout repo and install dependencies"
 
 inputs:
