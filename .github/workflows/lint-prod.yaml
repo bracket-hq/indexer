@@ -1,5 +1,5 @@
 name: Lint Prod
-run-name: Lint PR to ${{ github.base_ref }} by ${{ github.triggering_actor}}
+run-name: Lint PR to `${{ github.base_ref }}` by ${{ github.triggering_actor}}
 on:
   pull_request:
     branches: [master]
