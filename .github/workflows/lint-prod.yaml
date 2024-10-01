@@ -1,0 +1,31 @@
+name: Lint Prod
+run-name: Lint PR to ${{ github.base_ref }} by ${{ github.triggering_actor}}
+on:
+  pull_request:
+    branches: [master]
+
+jobs:
+  check-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check branch
+        if: (github.base_ref == 'master' && github.head_ref != 'dev')
+        run: |
+          if [ "${{ github.base_ref }}" == "master" ]; then
+            echo "ERROR: You can only merge to master from dev. Current head branch is ${{ github.head_ref }}."
+          fi
+          exit 1
+
+  lint-project:
+    needs: [check-branch]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup repo
+        id: setup-repo
+        uses: ./.github/actions/setup-repo
+
+      - name: Lint project files
+        run: bun run lint
