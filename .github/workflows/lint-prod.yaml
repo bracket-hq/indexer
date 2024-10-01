@@ -28,4 +28,4 @@ jobs:
         uses: ./.github/actions/setup-repo
 
       - name: Lint project files
-        run: bun run lint
+        run: pnpm run lint
