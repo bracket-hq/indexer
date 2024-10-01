@@ -1,5 +1,5 @@
 name: Lint PR
-run-name: Lint PR to ${{ github.base_ref }} by ${{ github.triggering_actor}}
+run-name: Lint PR to `${{ github.base_ref }}` by ${{ github.triggering_actor}}
 on:
   pull_request:
     branches-ignore: [master]
@@ -15,9 +15,9 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Setup repo
+      - name: Set up repo
         id: setup-repo
         uses: ./.github/actions/setup-repo
 
       - name: Lint project files
-        run: bun run lint
+        run: pnpm run lint
