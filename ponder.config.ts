@@ -91,6 +91,7 @@ export default createConfig({
               "0x6822B427386C91b428eC4F2E45a51C86307b8FcF", // 20376946, nfl25w4
               "0x05924B1046E5c105251E3Fb158FaA47A61c8D8e8", // 20547735, mlb24wc
               "0x1793C8b27EAc31642F701DaE58057867332710f6", // 20765540, permissionless
+              "0x0D9e23403925438c281A31ed9532F108C5be5771", // 20861824, nfl25w6
             ],
           }
         : {
@@ -114,6 +115,7 @@ export default createConfig({
               "0xc6C12820326f49ec08595989827440912401D5A2", // 15887420, nfl25w4
               "0x866AbF7a3F56eE9DC5179f99B124Bc32b4222156", // 16058170, mlb24wc
               "0xb2F2Df2aCd852Dae7d3E118fDE9B0753d6387FCe", // 16276029, permissionless
+              "0x0e7d98bE774C33b95DD9A9BDb58E6651a4636dc6", // 16372285, nfl25w6
             ],
           },
   },
