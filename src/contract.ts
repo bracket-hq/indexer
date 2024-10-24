@@ -55,9 +55,7 @@ async function readContractMulticall(context: Context, address: Address) {
           return results.map((r, index) => {
             // Fallback for missing claimerAccount
             if (r.status !== "success" && index === 2) {
-              return process.env.NODE_ENV === "production"
-                ? (process.env.DEFAULT_CLAIMER as Address)
-                : (process.env.DEFAULT_CLAIMER_SEPOLIA as Address)
+              return process.env.DEFAULT_CLAIMER as Address
             }
             // Fallback for missing curveDenominator, ncaab had a curve denominator of 420, all other early contracts had 100
             if (r.status !== "success" && index === 4) {

@@ -1,22 +1,22 @@
 {
-  "name": "@nilli/indexer",
+  "name": "@bracket/indexer",
   "private": true,
   "type": "module",
   "main": "src/index.ts",
   "scripts": {
-    "codegen": "ponder codegen",
-    "dev": "ponder dev",
+    "codegen": "dotenvx run -- ponder codegen",
+    "dev": "dotenvx run -- ponder dev",
+    "dotenvx": "dotenvx",
     "fix": "biome check --write --unsafe --no-errors-on-unmatched",
     "preinstall": "npx only-allow pnpm",
     "postinstall": "simple-git-hooks",
     "lint": "pnpm run lint:biome && pnpm run lint:typecheck",
     "lint:biome": "biome check --no-errors-on-unmatched",
     "lint:typecheck": "tsc --noEmit",
-    "start": "ponder start"
+    "start": "dotenvx run -- ponder start"
   },
   "simple-git-hooks": {
-    "pre-commit": "pnpm exec lint-staged",
-    "commit-msg": "pnpm exec commitlint --edit --config=commitlint.config.js"
+    "pre-commit": "pnpm exec lint-staged"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,css,json}": "biome check --write --unsafe --no-errors-on-unmatched",
@@ -24,18 +24,17 @@
   },
   "dependencies": {
     "@ponder/core": "0.5.24",
-    "hono": "4.5.5",
-    "viem": "2.19.6"
+    "hono": "4.6.6",
+    "viem": "2.21.34"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.8.3",
-    "@commitlint/cli": "19.3.0",
-    "@commitlint/config-conventional": "19.2.2",
-    "@types/node": "20.14.9",
-    "lint-staged": "15.2.7",
+    "@biomejs/biome": "1.9.4",
+    "@dotenvx/dotenvx": "1.20.1",
+    "@types/node": "22.7.9",
+    "lint-staged": "15.2.10",
     "simple-git-hooks": "2.11.1",
-    "sort-package-json": "2.10.0",
-    "typescript": "5.5.3"
+    "sort-package-json": "2.10.1",
+    "typescript": "5.6.3"
   },
   "packageManager": "pnpm@8.15.9",
   "engines": {
